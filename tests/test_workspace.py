@@ -31,6 +31,8 @@ class StudioTests(unittest.TestCase):
             w=Workspace(d);r=w.action({'action':'train','source':'synthetic','model':'logistic-regression'})
             self.assertEqual(Workspace(d).state()['experiments'][0]['id'],r['id'])
             self.assertNotIn('csv',r);self.assertEqual(r['source'],'synthetic')
+            prediction=w.action({'action':'predict','id':r['id'],'csv':make_sample(2).drop(columns=['Label']).to_csv(index=False)})
+            self.assertEqual(prediction['rows'],2)
             w.action({'action':'delete','id':r['id']});self.assertFalse((Path(d)/'models'/(r['id']+'.joblib')).exists())
     def test_limits_and_invalid_model_path(self):
         with self.assertRaises(ValueError):read_csv('')

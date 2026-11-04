@@ -20,7 +20,7 @@ const assert=require('node:assert/strict');
   await page.goto(base);await page.waitForFunction(()=>document.querySelector('#content').children.length>0);
   const kind=await page.evaluate(()=>document.body.dataset.kind);
   const click=name=>page.getByRole('button',{name,exact:true}).click();
-  const notice=part=>page.waitForFunction(p=>document.querySelector('#notice').textContent.includes(p),part);
+  const notice=part=>page.waitForFunction(p=>{const n=document.querySelector('#notice');if(n.classList.contains('error'))throw Error(n.textContent);return n.textContent.includes(p);},part);
   const isError=async()=>assert.equal(await page.locator('#notice').getAttribute('class'),'notice');
   if(kind==='ml'){
    await click('Inspect dataset');await notice('Dataset inspected');await isError();
@@ -63,6 +63,7 @@ const assert=require('node:assert/strict');
   }else throw Error('Unknown workspace kind: '+kind);
   await mkdir('visuals',{recursive:true});
   await page.screenshot({path:'visuals/desktop.png',fullPage:true});
+  await page.screenshot({path:'visuals/preview.png'});
   await page.setViewportSize({width:390,height:844});
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1);
   assert.equal(overflow,false,'Page must fit the mobile viewport; data tables may scroll within their container.');
