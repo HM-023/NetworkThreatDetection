@@ -21,3 +21,7 @@ node tests/browser.cjs
 ```
 
 The application itself needs neither Node nor Playwright. These are verification dependencies only.
+
+## Hosted release check
+
+On 2026-11-04, both the domain/unit job and browser workflow passed for the [local workspace release](https://github.com/HM-023/NetworkThreatDetection/actions/runs/41802075418). The repository screenshots were captured by that successful browser journey. Use the workflow link above to inspect subsequent commits and results.

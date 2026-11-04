@@ -1,5 +1,5 @@
 # Visual assets
 
-`cover.svg` is the project cover. `architecture.svg` is a newly authored diagram of the public repository contents. Both use self-contained SVG with text alternatives in the main README.
+The project cover and architecture drawings are newly authored SVG illustrations. `reference-architecture.svg` preserves the previous case-study diagram.
 
-These are explanatory illustrations, not simulator screenshots, application screenshots or test evidence. The main README and linked documents define implementation and verification boundaries.
+`workspace-preview.png`, `workspace-desktop.png` and `workspace-mobile.png` are real Chromium captures from the automated browser journey. Only fictional or synthetic inputs were used. The preview is a 1440 × 1000 viewport; the full desktop and mobile captures show the exercised workspace. These captures verify presentation at that point in the workflow, not production readiness or independent real-world outcomes.
