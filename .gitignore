@@ -29,3 +29,13 @@ venv/
 .ipynb_checkpoints/
 results/
 reports/generated/
+
+
+# Local workspace state; never publish private inputs or model artifacts.
+data/
+*.sqlite3
+*.sqlite3-*
+*.joblib
+*.log
+node_modules/
+visuals/

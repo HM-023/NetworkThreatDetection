@@ -2,66 +2,78 @@
 
 # Network Threat Detection
 
-**Working Python demo** · [Portfolio](https://github.com/HM-023) · [Evaluation protocol](docs/evaluation.md) · [Validation](docs/validation.md)
+**Local ML experiment workspace** · [User guide](docs/workspace-guide.md) · [Architecture](docs/workspace-architecture.md) · [Verification](docs/workspace-verification.md) · [Portfolio](https://github.com/HM-023)
 
-[![Python tests](https://github.com/HM-023/NetworkThreatDetection/actions/workflows/tests.yml/badge.svg)](https://github.com/HM-023/NetworkThreatDetection/actions/workflows/tests.yml)
+[![Workspace verification](https://github.com/HM-023/NetworkThreatDetection/actions/workflows/workspace.yml/badge.svg)](https://github.com/HM-023/NetworkThreatDetection/actions/workflows/workspace.yml)
 
+CSV class balance, missing numeric values and feature summaries. The repository now includes a working, browser-based local workspace with a responsive dashboard and persistent records.
 
-Reproducible Python workflow for classifying **labeled network-flow records**. The project explores security analytics and the challenges of evaluating imbalanced network datasets.
+## What you can do
 
-## What is included
+| Capability | Working behavior |
+|:---|:---|
+| **Dataset inspection** | CSV class balance, missing numeric values and feature summaries. |
+| **Real experiment training** | Random Forest and Logistic Regression with train-only fitted preprocessing. |
+| **Split control** | Random stratified, group-disjoint and chronological holdouts. |
+| **Evaluation** | Per-class metrics, confusion matrices and protocol fingerprints for comparing like-for-like runs. |
+| **Saved-model prediction** | Predict from workspace-generated model artifacts; arbitrary model uploads are rejected. |
+| **Persistent history** | SQLite experiment metadata, local model artifacts and JSON report exports. |
 
-- A complete CLI to load a CSV, remove common identifiers, clean non-finite values, split before fitting transformations, and train a model.
-- Two configurable classifiers: Random Forest and multinomial-capable Logistic Regression.
-- Stratified train/test holdout, per-class precision/recall/F1, macro and weighted averages, and a confusion matrix.
-- A separate, **synthetic** test dataset generator and automated regression tests.
+## Run locally
 
-> **No real dataset or pretrained model is distributed.** The original research dataset's redistribution rights are not established. Provide your own appropriately licensed CSV with a `Label` column. Results vary with data quality and sampling; this is not a production intrusion detection system.
-
-## Workflow overview
-
-![Training and evaluation workflow](assets/architecture.svg)
-
-## Quick start
+Requires **Python 3.11+**. Run commands from this repository's root:
 
 ```bash
 python -m venv .venv
 # Windows PowerShell: .venv\Scripts\Activate.ps1
 # macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-python examples/make_synthetic_data.py --output results/demo_flows.csv
-python -m src.train --input results/demo_flows.csv --model random-forest --output results/evaluation
+python -m pip install -r requirements.txt
+python -m webapp.app
+```
+
+Open **http://127.0.0.1:8101** in your browser. Stop the server with `Ctrl+C`.
+
+Four workspaces use only Python's standard library. The ML workspace uses the packages in `requirements.txt`. The browser UI loads no external fonts, scripts, analytics or services. After dependencies are installed, the applications run offline.
+
+For a different local port or data directory:
+
+```bash
+python -m webapp.app --port 8201 --data-dir path/to/local-workspace
+```
+
+## Architecture
+
+![Local workspace architecture](assets/architecture.svg)
+
+The server binds to loopback, checks the Host header and requires a fresh per-process token for API access. Mutations also reject foreign browser origins. Local data lives under `data/` by default; database files, model files and generated outputs are excluded from version control.
+
+## Verify the implementation
+
+```bash
 python -m unittest discover -s tests -v
 ```
 
-The synthetic dataset is generated from artificial statistical distributions and **must not** be used as a real-world accuracy benchmark.
+The [workspace workflow](https://github.com/HM-023/NetworkThreatDetection/actions/workflows/workspace.yml) runs domain tests and an automated browser journey on GitHub. Browser runs upload real desktop and mobile captures as the **workspace-screenshots** artifact. See the verification document for the exact tested boundaries.
 
-## Using a real dataset
+## Implementation boundaries
 
-```bash
-python -m src.train --input path/to/licensed_flows.csv --label Label --model logistic-regression --output results/evaluation
-```
+The original Python training CLI remains available. The studio adds a local user interface and persisted experiments; it does not capture packets or monitor a network. Real-traffic quality depends on licensed data, labels and an appropriate independent evaluation.
 
-The report includes `metrics.json`, `classification_report.txt`, `confusion_matrix.csv`, and `run_metadata.json` in the local output directory. It avoids storing raw network records in these outputs.
+These are local portfolio applications, with documented scope and tested workflows. They are not deployed enterprise services. No synthetic model score is presented as a real-world detection benchmark, and no generated network diagram or policy decision is presented as live network evidence.
 
-## Method and limits
+## Repository map
 
-The holdout split is performed *before* any imputation or scaling. All preprocessing is fitted on the training portion only through `sklearn.pipeline.Pipeline`, avoiding a leakage pattern in earlier experiments. Identifiers (flow IDs, IP addresses, timestamps) are dropped by default; numeric network-flow characteristics remain.
+| Path | Purpose |
+|:---|:---|
+| `webapp/app.py` | Application actions and local workspace state |
+| `webapp/runtime.py` | Loopback HTTP boundary and SQLite document storage |
+| `webapp/static/` | Responsive dashboard, forms, tables, charts and exports |
+| `tests/` | Domain, persistence, server-boundary and browser checks |
+| `docs/workspace-guide.md` | Usage, input formats and local-data operations |
+| `docs/reference-case-study.md` | Prior case study, historical context and attribution |
 
-This is a random stratified split. Traffic from the same host, capture, or time period may remain correlated between train and test. For deployment-oriented claims, use an independent capture, temporal/group-aware split, drift checks, calibration, and operational false-positive analysis. The program does not sniff packets or monitor a network live.
+## Provenance and reuse
 
-## Repository layout
+The workspace code and generic examples are newly authored. Historical collaborative source materials, private datasets, credentials and organization-specific documents remain excluded. The [reference case study](docs/reference-case-study.md), [publication notes](PUBLICATION_NOTES.md) and existing security guidance retain the original contribution and reuse boundaries. No blanket license has been added to historical material.
 
-- `src/train.py` — ingestion, preprocessing, training, evaluation CLI
-- `examples/make_synthetic_data.py` — synthetic, non-sensitive testing input
-- `tests/test_training.py` — leakage and output tests
-- `docs/evaluation.md` — validation guidance and reproducibility limits
-
-## Project maturity
-
-**Validated code demo**, not a production sensor. Previous historical notebook scores have intentionally not been copied because they require reevaluation using corrected preprocessing and independently verified data provenance.
-
-## Acknowledgments and reuse
-
-Developed from an earlier collaborative investigation of network security data. Specific contribution and reuse rights for historical artifacts should be verified before any original notebooks, datasets, or diagrams are added. This refreshed code is a clean implementation of the methodological approach.
-
+The original CLI remains available: `python -m src.train --help`.
