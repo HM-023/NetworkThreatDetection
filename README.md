@@ -1,4 +1,11 @@
+![Network Threat Detection](assets/cover.svg)
+
 # Network Threat Detection
+
+**Working Python demo** · [Portfolio](https://github.com/HM-023) · [Evaluation protocol](docs/evaluation.md) · [Validation](docs/validation.md)
+
+[![Python tests](https://github.com/HM-023/NetworkThreatDetection/actions/workflows/tests.yml/badge.svg)](https://github.com/HM-023/NetworkThreatDetection/actions/workflows/tests.yml)
+
 
 Reproducible Python workflow for classifying **labeled network-flow records**. The project explores security analytics and the challenges of evaluating imbalanced network datasets.
 
@@ -10,6 +17,10 @@ Reproducible Python workflow for classifying **labeled network-flow records**. T
 - A separate, **synthetic** test dataset generator and automated regression tests.
 
 > **No real dataset or pretrained model is distributed.** The original research dataset's redistribution rights are not established. Provide your own appropriately licensed CSV with a `Label` column. Results vary with data quality and sampling; this is not a production intrusion detection system.
+
+## Workflow overview
+
+![Training and evaluation workflow](assets/architecture.svg)
 
 ## Quick start
 
@@ -53,3 +64,4 @@ This is a random stratified split. Traffic from the same host, capture, or time 
 ## Acknowledgments and reuse
 
 Developed from an earlier collaborative investigation of network security data. Specific contribution and reuse rights for historical artifacts should be verified before any original notebooks, datasets, or diagrams are added. This refreshed code is a clean implementation of the methodological approach.
+
